@@ -1,0 +1,32 @@
+.editContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+}
+
+.barContainer {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  height: 60vh;
+}
+
+.button-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.speed-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+h1 {
+  font-family: 'Dune';
+}
