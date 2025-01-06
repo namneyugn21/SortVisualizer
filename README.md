@@ -1,5 +1,7 @@
 # SortVisualizer
 
+![Preview](./src/assets/images/preview.png)
+
 Welcome to **SortVisualizer**, an interactive web app that brings sorting algorithms to life! Whether you're a coding newbie, an algorithm aficionado, or just curious about how data gets sorted, this project is here to add a bit of color and sound to your learning journey.
 
 ## Features
