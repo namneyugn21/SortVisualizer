@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Visualizer.css';
 import { bubbleSort } from '../Algorithms/bubbleSort';
 import { insertionSort } from '../Algorithms/insertionSort';
@@ -7,7 +7,7 @@ import soundA from '../../assets/audio/compareSound.wav';
 import soundB from '../../assets/audio/swapSound.wav';
 
 // Visualizer component
-function Visualizer() {
+function Visualizer({ optionSelected }: { optionSelected: string }) {
   const ANIMATION_SPEED_MS = 75; // speed of the animations
   const compareSound = new Audio(soundA); // sound effect for comparing elements
   const swapSound = new Audio(soundB); // sound effect for swapping elements
@@ -19,23 +19,27 @@ function Visualizer() {
   const [sorted, setSorted] = useState<boolean>(false); // boolean to check if array is sorted
   const [sliderValue, setSliderValue] = useState<number>(15); // slider value to set the number of elements to be visualized
   const [array, setArray] = useState<number[]>([]);  // array of random numbers to store the numbers to be visualized
+  const [comparisonCount, setComparisonCount] = useState<number>(0); // number of comparisons made
+  const [swapCount, setSwapCount] = useState<number>(0); // number of swaps made
 
   // color codes for the bars
-  const PRIMARY_COLOUR = '#a9d6e5';
-  const ACTIVE_COMPARISON = '#61a5c2';
-  const SORTED = '#89c2d9';
+  const PRIMARY_COLOUR = '#ffc285';
+  const ACTIVE_COMPARISON = '#693f1a';
+  const SORTED = '#d88252';
 
-
-  // generate initial array when component mounts
-  useState(() => {
+  // generate random numbers when the optionSelected changes or the component mounts
+  useEffect(() => {
     getRandomIntInclusive(sliderValue);
-  });
+  }, [optionSelected]);
+
 
   // function to generate random numbers
   function getRandomIntInclusive(numberValue: number) {
     if (isSorting) return; // return if sorting is in progress
     setSorted(false); // reset the sorted state
     setIsSorting(false); // reset the sorting state
+    setComparisonCount(0); // reset the comparison count
+    setSwapCount(0); // reset the swap count
   
     // clear previous array bar styles
     const bars = document.getElementsByClassName('barContainer')[0]?.children;
@@ -56,7 +60,7 @@ function Visualizer() {
   }
 
   // function to handle bubble sort
-  function handleAnimations(sortAlgorithm: string) {
+  function handleAnimations() {
     if (isSorting) return; // return if sorting is in progress
     if (sorted) return; // return if array is already sorted
     setIsSorting(true); // set isSorting to true
@@ -65,14 +69,14 @@ function Visualizer() {
     let animationArray = [...array];
 
     // call the sorting algorithm based on the sortAlgorithm parameter
-    switch (sortAlgorithm) {
-      case "bubbleSort":
+    switch (optionSelected) {
+      case "BUB":
         animations = bubbleSort(animationArray);
         break;
-      case "insertionSort":
+      case "INS":
         animations = insertionSort(animationArray);
         break;
-      case "selectionSort":
+      case "SEL":
         animations = selectionSort(animationArray);
         break;
       default:
@@ -103,6 +107,9 @@ function Visualizer() {
             bar1.style.background = PRIMARY_COLOUR;
             bar2.style.background = PRIMARY_COLOUR;
           }, ANIMATION_SPEED_MS);
+
+          // increment the comparison count
+          setComparisonCount((prevCount) => prevCount + 1);
         } else if (animation.type === 'swap') {
           const [index1, index2] = animation.indices;
 
@@ -117,6 +124,9 @@ function Visualizer() {
           // play sound effect
           swapSound.currentTime = 0;
           swapSound.play();
+
+          // increment the swap count
+          setSwapCount((prevCount) => prevCount + 1);
         } else if (animation.type === 'sorted') {
           const [index] = animation.indices;
 
@@ -138,17 +148,15 @@ function Visualizer() {
     <div className='container'>
       <div className='editContainer'>
         <h1>Sort Visualizer</h1>
-        <input id="slider" type="range" defaultValue={15} min={10} max={100} step={5} onChange={(event) => setSliderValue(Number(event.target.value))} /><br />
+        <input id="slider" type="range" defaultValue={15} min={10} max={50} step={5} onChange={(event) => setSliderValue(Number(event.target.value))} />
 
         <div className='button-menu'>
           <button onClick={() => getRandomIntInclusive(sliderValue)}>Generate</button>
           {/* List of sorting algorithms */}
-          <button onClick={() => handleAnimations("bubbleSort")}>Bubble Sort</button>
-          <button onClick={() => handleAnimations("insertionSort")}>Insertion Sort</button>
-          <button onClick={() => handleAnimations("selectionSort")}>Selection Sort</button>
+          <button onClick={() => handleAnimations()}>Sort</button>
         </div>
 
-        <p>Generating {sliderValue} elements...</p><br />
+        <p>Sorting {sliderValue} elements...</p>
       </div>
     
       <div className='barContainer'>
@@ -169,6 +177,10 @@ function Visualizer() {
             </div>
           );
         })}
+      </div>
+      <div className='stat-container'>
+        <p>Comparisons: {comparisonCount}</p>
+        <p>Swaps: {swapCount}</p>
       </div>
     </div>
   );

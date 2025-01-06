@@ -1,0 +1,22 @@
+.navbar {
+  height: 5vh;
+  margin: 0 0;
+  display: flex;
+}
+
+.sort-menu {
+  display: flex;
+  align-items: center;
+  padding: 30px 25px;
+}
+
+.sort-menu li {
+  list-style-type: none;
+  margin-right: 25px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: bold;
+}

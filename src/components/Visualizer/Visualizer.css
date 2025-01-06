@@ -1,9 +1,14 @@
+.container {
+  position: relative;
+}
+
 .editContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 40vh;
+  height: 35vh;
+  gap: 25px;
 }
 
 .barContainer {
@@ -20,13 +25,96 @@
   gap: 10px;
 }
 
-.speed-menu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
 h1 {
   font-family: 'Dune';
+}
+
+/* Dune-themed input slider */
+#slider {
+  margin: 10px 0px;
+  padding: 1.5px 0px;
+  appearance: none;
+  height: 6px;
+  background: linear-gradient(90deg, #f2c27b, #9e6939);
+  border-radius: 5px;
+  outline: none;
+  transition: background 0.3s;
+  box-shadow: 0 0 8px rgba(255, 165, 79, 0.4);
+}
+
+/* Slider thumb (the handle) */
+#slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff7f50, #a6452c);
+  border: 2px solid #ffe4b5;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(255, 127, 80, 0.8);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(255, 127, 80, 1);
+}
+
+/* Add a glowing effect when active */
+#slider::-webkit-slider-thumb:active {
+  transform: scale(1.3);
+  box-shadow: 0 0 30px rgba(255, 69, 0, 1);
+}
+
+#slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff7f50, #a6452c);
+  border: 2px solid #ffe4b5;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(255, 127, 80, 0.8);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(255, 127, 80, 1);
+}
+
+#slider::-moz-range-thumb:active {
+  transform: scale(1.3);
+  box-shadow: 0 0 30px rgba(255, 69, 0, 1);
+}
+
+/* Add a glowing trail effect when interacting */
+#slider:hover {
+  background: linear-gradient(90deg, #ffc285, #d88252);
+  box-shadow: 0 0 10px rgba(255, 165, 79, 0.8);
+}
+
+/* Container styling for better fit */
+.slider-container {
+  margin: 20px 0;
+  padding: 10px;
+  background: linear-gradient(145deg, #1f1a13, #2d261c);
+  border: 2px solid #a05a2c;
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 165, 79, 0.5);
+}
+
+.stat-container {
+  background-color: #1f1a13b0;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: start !important;
+  gap: 10px;
+  padding: 15px 20px;
+  flex-direction: column;
+  left: 25px;
+  bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ff9d7acc;
 }
