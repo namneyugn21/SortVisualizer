@@ -3,12 +3,13 @@ import './Visualizer.css';
 import { bubbleSort } from '../Algorithms/bubbleSort';
 import { insertionSort } from '../Algorithms/insertionSort';
 import { selectionSort } from '../Algorithms/selectionSort';
+import { mergeSort } from '../Algorithms/mergeSort';
 import soundA from '../../assets/audio/compareSound.wav';
 import soundB from '../../assets/audio/swapSound.wav';
 
 // Visualizer component
 function Visualizer({ optionSelected }: { optionSelected: string }) {
-  const ANIMATION_SPEED_MS = 75; // speed of the animations
+  const ANIMATION_SPEED_MS = 100; // speed of the animations
   const compareSound = new Audio(soundA); // sound effect for comparing elements
   const swapSound = new Audio(soundB); // sound effect for swapping elements
   compareSound.volume = 0.1;
@@ -19,13 +20,13 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
   const [sorted, setSorted] = useState<boolean>(false); // boolean to check if array is sorted
   const [sliderValue, setSliderValue] = useState<number>(15); // slider value to set the number of elements to be visualized
   const [array, setArray] = useState<number[]>([]);  // array of random numbers to store the numbers to be visualized
-  const [comparisonCount, setComparisonCount] = useState<number>(0); // number of comparisons made
-  const [swapCount, setSwapCount] = useState<number>(0); // number of swaps made
 
   // color codes for the bars
-  const PRIMARY_COLOUR = '#ffc285';
-  const ACTIVE_COMPARISON = '#693f1a';
-  const SORTED = '#d88252';
+  const PRIMARY_COLOUR = '#ffc285'; // golden Sand
+  const SECONDARY_COLOUR = '#b8a38d'; // taupe beige
+  const TERTIARY_COLOUR = '#a44a3f'; // clay red
+  const ACTIVE = '#693f1a'; // desert mahogany
+  const SORTED = '#d88252'; // terracotta orange
 
   // generate random numbers when the optionSelected changes or the component mounts
   useEffect(() => {
@@ -38,8 +39,6 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
     if (isSorting) return; // return if sorting is in progress
     setSorted(false); // reset the sorted state
     setIsSorting(false); // reset the sorting state
-    setComparisonCount(0); // reset the comparison count
-    setSwapCount(0); // reset the swap count
   
     // clear previous array bar styles
     const bars = document.getElementsByClassName('barContainer')[0]?.children;
@@ -79,6 +78,9 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
       case "SEL":
         animations = selectionSort(animationArray);
         break;
+      case "MER":
+        animations = mergeSort(animationArray);
+        break;
       default:
         break;
     }
@@ -99,8 +101,8 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
           const bar1 = document.getElementsByClassName('barContainer')[0].children[index1] as HTMLElement;
           const bar2 = document.getElementsByClassName('barContainer')[0].children[index2] as HTMLElement;
 
-          bar1.style.background = ACTIVE_COMPARISON;
-          bar2.style.background = ACTIVE_COMPARISON;
+          bar1.style.background = ACTIVE;
+          bar2.style.background = ACTIVE;
           
           // set the two elements back to their original color after 250ms
           setTimeout(() => {
@@ -108,8 +110,30 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
             bar2.style.background = PRIMARY_COLOUR;
           }, ANIMATION_SPEED_MS);
 
-          // increment the comparison count
-          setComparisonCount((prevCount) => prevCount + 1);
+        } else if (animation.type === 'overwrite') {
+          const [index, newValue] = animation.indices;
+        
+          // overwrite bar height with the new value
+          const bar = document.getElementsByClassName('barContainer')[0].children[index] as HTMLElement;
+          const maxValue = Math.max(...array);
+          const newHeightPercentage = (newValue / maxValue) * 100;
+        
+          bar.style.background = SORTED;
+          bar.style.height = `${newHeightPercentage}%`;
+
+          // play sound effect
+          swapSound.currentTime = 0;
+          swapSound.play();
+        } else if (animation.type === 'highlighted') {
+          const [index] = animation.indices;
+
+          // highlight the range of elements being merged
+          const bar = document.getElementsByClassName('barContainer')[0].children[index] as HTMLElement;
+          bar.style.background = TERTIARY_COLOUR; 
+
+          // play sound effect
+          compareSound.currentTime = 0;
+          compareSound.play();
         } else if (animation.type === 'swap') {
           const [index1, index2] = animation.indices;
 
@@ -124,9 +148,6 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
           // play sound effect
           swapSound.currentTime = 0;
           swapSound.play();
-
-          // increment the swap count
-          setSwapCount((prevCount) => prevCount + 1);
         } else if (animation.type === 'sorted') {
           const [index] = animation.indices;
 
@@ -177,10 +198,6 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
             </div>
           );
         })}
-      </div>
-      <div className='stat-container'>
-        <p>Comparisons: {comparisonCount}</p>
-        <p>Swaps: {swapCount}</p>
       </div>
     </div>
   );

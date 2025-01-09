@@ -2,6 +2,7 @@
   height: 5vh;
   margin: 0 0;
   display: flex;
+  justify-content: space-between;
 }
 
 .sort-menu {
@@ -13,10 +14,36 @@
 .sort-menu li {
   list-style-type: none;
   margin-right: 25px;
-  transition: all 0.3s ease-in-out;
   cursor: pointer;
+  padding: 5px 0px;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease-in-out;
+}
+.sort-menu li:hover {
+  border-bottom: 1px solid rgb(255, 255, 255);
 }
 
 .selected {
   font-weight: bold;
+  border-bottom: 1px solid rgb(255, 255, 255) !important;
+}
+
+.info-menu {
+  display: flex;
+  align-items: center;
+  padding: 30px 25px;
+}
+
+.info-menu li {
+  list-style-type: none;
+  margin-right: 25px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  padding: 5px 0px;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.info-menu li:hover {
+  border-bottom: 1px solid rgb(255, 255, 255);
 }
