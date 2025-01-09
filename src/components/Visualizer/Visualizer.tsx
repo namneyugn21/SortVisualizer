@@ -23,7 +23,7 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
 
   // color codes for the bars
   const PRIMARY_COLOUR = '#ffc285'; // golden Sand
-  const SECONDARY_COLOUR = '#b8a38d'; // taupe beige
+  // const SECONDARY_COLOUR = '#b8a38d'; // taupe beige
   const TERTIARY_COLOUR = '#a44a3f'; // clay red
   const ACTIVE = '#693f1a'; // desert mahogany
   const SORTED = '#d88252'; // terracotta orange
