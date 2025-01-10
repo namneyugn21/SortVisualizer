@@ -27,16 +27,28 @@ export function selectionSort(array: number[]): { type: string, indices: number[
     // if new min value is found, swap the min value with the first element of the unsorted part of the array
     if (minIndex !== i) { 
       swap(array, i, minIndex, animations);
+      animations.push({
+        type: 'sorted',
+        indices: [i]
+      });
+    } else {
+      animations.push({
+        type: 'sorted',
+        indices: [minIndex]
+      });
     }
-  }
-
-  // highlight all the sorted elements in a different color
-  for (let i = 0; i < array.length; i++) {
-    animations.push({ 
-      type: 'sorted', 
-      indices: [i] 
+    
+    animations.push({
+      type: 'sorted',
+      indices: [i]
     });
   }
+
+  // highlight the last element in a different color
+  animations.push({
+    type: 'sorted',
+    indices: [array.length - 1]
+  });
 
   return animations;
 }

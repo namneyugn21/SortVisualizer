@@ -22,17 +22,29 @@ export function bubbleSort(array: number[]): { type: string, indices: number[] }
       }
     }
 
-    // if no two elements were swapped, then the array is sorted
-    if (!swapped) {
-      break;
-    };
-  }
-
-  for (let i = 0; i < array.length; i++) {
+    // mark the last element of this pass as sorted
     animations.push({
       type: 'sorted',
-      indices: [i]
+      indices: [array.length - 1 - i]
     });
+
+    // if no two elements were swapped, then the array is sorted
+    if (!swapped) {
+      // mark the remaining unsorted elements as sorted
+      for (let k = 0; k < array.length - i; k++) {
+        animations.push({
+          type: 'sorted',
+          indices: [k]
+        });
+      }
+      break;
+    } else {
+      // mark the last element of this pass as sorted
+      animations.push({
+        type: 'sorted',
+        indices: [array.length - 1 - i]
+      });
+    }
   }
 
   return animations;
