@@ -21,7 +21,7 @@ Welcome to **SortVisualizer**, an interactive web app that brings sorting algori
 ## How It Works
 1. **Choose an Array Size**: Use the slider to select the number of elements.
 2. **Generate Array**: Click the "Generate" button to create a random array.
-3. **Pick an Algorithm**: Select Bubble Sort, Insertion Sort, or Selection Sort.
+3. **Pick an Algorithm**: Select the available sorting algorithms on the navigation bar
 4. **Explore the Info Tab**: Click on the Info Tab to learn more about the selected algorithm, including step-by-step explanations and complexities.
 5. **Watch the Magic**: Enjoy the animations, gradients, and sounds as the algorithm sorts the array!
 
