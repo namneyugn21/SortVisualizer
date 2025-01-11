@@ -25,6 +25,10 @@ function Navbar({ optionSelected, setOptionSelected }: { optionSelected: string,
           <li className='selected'>MERGE SORT</li> : 
           <li onClick={() => {setOptionSelected('MER'), setOptionName('Merge Sort')}}>MER</li>
         }
+        {optionSelected === 'COU' ? 
+          <li className='selected'>COUNTING SORT</li> : 
+          <li onClick={() => {setOptionSelected('COU'), setOptionName('Counting Sort')}}>COU</li>
+        }
       </ul>
       <ul className='info-menu'>
         <li onClick={() => setShowInfo(true)}>Learn more about {optionName}</li>

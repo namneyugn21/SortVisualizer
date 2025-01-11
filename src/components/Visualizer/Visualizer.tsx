@@ -6,6 +6,7 @@ import { selectionSort } from '../Algorithms/selectionSort';
 import { mergeSort } from '../Algorithms/mergeSort';
 import soundA from '../../assets/audio/compareSound.wav';
 import soundB from '../../assets/audio/swapSound.wav';
+import { countingSort } from '../Algorithms/countingSort';
 
 // Visualizer component
 function Visualizer({ optionSelected }: { optionSelected: string }) {
@@ -20,6 +21,7 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
   const [sorted, setSorted] = useState<boolean>(false); // boolean to check if array is sorted
   const [sliderValue, setSliderValue] = useState<number>(15); // slider value to set the number of elements to be visualized
   const [array, setArray] = useState<number[]>([]);  // array of random numbers to store the numbers to be visualized
+  const [isNonComparison, setIsNonComparison] = useState<boolean>(true); // boolean to check if the sort algorithm is non-comparison based
 
   // color codes for the bars
   const PRIMARY_COLOUR = '#ffc285'; // golden Sand
@@ -33,10 +35,10 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
     getRandomIntInclusive(sliderValue);
   }, [optionSelected]);
 
-
   // function to generate random numbers
   function getRandomIntInclusive(numberValue: number) {
     if (isSorting) return; // return if sorting is in progress
+    setIsNonComparison(false); // check if the sort algorithm is non-comparison based
     setSorted(false); // reset the sorted state
     setIsSorting(false); // reset the sorting state
   
@@ -49,8 +51,8 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
       }
     }
 
-    const minCeiled = Math.ceil(5); // minimum value is 5
-    const maxFloored = Math.floor(500); // maximum value is 100
+    const minCeiled = Math.ceil(1); // minimum value is 5
+    const maxFloored = Math.floor(10); // maximum value is 100
     const filledArray = new Array(numberValue);
     for (let i = 0; i < numberValue; i++) {
       filledArray[i] = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
@@ -58,13 +60,14 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
     setArray(filledArray);
   }
 
-  // function to handle bubble sort
+  // function to handle comparison-based sort
   function handleAnimations() {
     if (isSorting) return; // return if sorting is in progress
     if (sorted) return; // return if array is already sorted
     setIsSorting(true); // set isSorting to true
+    setIsNonComparison(optionSelected === 'COU'); // check if the sort algorithm is non-comparison based
 
-    let animations: { type: string, indices: number[] }[] = [];
+    let animations: { type: string, indices: number[], value?: number }[] = [];
     let animationArray = [...array];
 
     // call the sorting algorithm based on the sortAlgorithm parameter
@@ -80,6 +83,9 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
         break;
       case "MER":
         animations = mergeSort(animationArray);
+        break;
+      case "COU":
+        animations = countingSort(animationArray);
         break;
       default:
         break;
@@ -154,6 +160,32 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
           // highlight the sorted element in a different color
           const bar = document.getElementsByClassName('barContainer')[0].children[index] as HTMLElement;
           bar.style.background = SORTED;
+        } else if (animation.type === 'count') {
+          const [index] = animation.indices;
+          const count = animation.value || 0;
+          
+          // add opacity to the count bar
+          const bar = document.getElementsByClassName('countBarContainer')[0].children[index] as HTMLElement;
+          bar.style.opacity = '1.0';
+
+          const countValue = document.getElementsByClassName('countBarContainer')[0].children[index].children[0] as HTMLElement;
+          if (countValue) {
+            countValue.innerHTML = count.toString();
+          }
+
+          // change the opacity of the count bar to 0.25 when the count is zero
+          if (count === 0) {
+            bar.style.opacity = '0.25';
+          }
+        } else if (animation.type === 'done') {
+          // hide the countBarContainer after sorting is complete
+          const display = document.getElementsByClassName('countBarContainer')[0] as HTMLElement;
+          display.classList.add('hidden');
+
+          // make it corresponding with the CSS transition time
+          setTimeout(() => {
+            display.style.display = 'none';
+          }, 500);
         }
       }, i * ANIMATION_SPEED_MS);
     }
@@ -180,24 +212,50 @@ function Visualizer({ optionSelected }: { optionSelected: string }) {
         <p>Sorting {sliderValue} elements...</p>
       </div>
     
-      <div className='barContainer'>
-        {array.map((value, index) => {
-          const maxValue = Math.max(...array);
-          const heightPercentage = (value / maxValue) * 100;
-          
-          return (
-            <div 
-              key={index}
-              style={{
-                height: `${heightPercentage}%`,
-                width: "20px",
-                background: PRIMARY_COLOUR,
-                margin: "0 1px",
-                transition: `all ${ANIMATION_SPEED_MS}ms ease-in-out`
-              }}>
-            </div>
-          );
-        })}
+      <div className='visualizer'>
+        <div className='barContainer'>
+          {array.map((value, index) => {
+            const maxValue = Math.max(...array);
+            const heightPercentage = (value / maxValue) * 100;
+            
+            return (
+              <div 
+                key={index}
+                style={{
+                  height: `${heightPercentage}%`,
+                  width: "20px",
+                  background: PRIMARY_COLOUR,
+                  margin: "0 0.5px",
+                  transition: `all ${ANIMATION_SPEED_MS}ms ease-in-out`
+                }}>
+              </div>
+            );
+          })}
+        </div>
+
+        {isNonComparison && (
+          <div className='countBarContainer'>
+            {/* create an array of size {Math.max(...array) + 1}
+            then fill it initially with zeros 
+            the map(_, index) notation means that we are not using the first argument of the map function as it is not needed
+            */}
+            {new Array(Math.max(0, ...array) + 1).fill(0).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  height: `${index / Math.max(...array) * 100}%`, // initially zero height
+                  width: "20px",
+                  background: PRIMARY_COLOUR,
+                  opacity: 0.25,
+                  margin: "0 0.5px",
+                  transition: `all ${ANIMATION_SPEED_MS}ms ease-in-out`,
+                }}
+              >
+                <p id='countValue'>0</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
